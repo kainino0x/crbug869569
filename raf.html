@@ -1,0 +1,45 @@
+<script id="worker" type="text/worker">
+let ctx;
+let x = 0, y = 50;
+
+function loop() {
+  requestAnimationFrame(loop);
+
+  ctx.fillStyle = x % 2 == 0? "blue" : "red";
+  ctx.fillRect(x, y, 10, 10);
+
+  if (x + 1 == 200) {
+    y += 11;
+  }
+  x = (x + 1) % 200;
+}
+
+onmessage = function(ev) {
+  if (ev.data == "hello") {
+    y -= 11;
+    return;
+  }
+
+  var ofc = ev.data;
+  ctx = ofc.getContext("2d");
+  loop();
+}
+</script>
+
+<canvas id="canvas"></canvas>
+
+<script>
+const code = document.getElementById('worker').innerText;
+const blob = new Blob([code], { type: 'application/javascript' });
+const worker = new Worker(URL.createObjectURL(blob));
+
+const canvas = document.getElementById('canvas');
+const offscreen = canvas.transferControlToOffscreen();
+worker.postMessage(offscreen, [offscreen]);
+
+function postAMessage() {
+  worker.postMessage("hello");
+}
+</script>
+
+<input type=button value=Post onclick="postAMessage();">
