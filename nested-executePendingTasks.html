@@ -1,0 +1,27 @@
+<script id="worker" type="text/worker">
+let hasRun = false;
+function runNested() {
+  hasRun = true;
+  executePendingTasks();
+}
+
+onmessage = function(ev) {
+  setTimeout(runNested, 0);
+  try {
+    while (!hasRun) {
+      executePendingTasks();
+    }
+  } catch (e) {
+    console.log('passed! Saw an exception, as expected:', e);
+    return;
+  }
+  console.log('failed! No exception!');
+}
+</script>
+
+<script>
+const code = document.getElementById('worker').innerText;
+const blob = new Blob([code], { type: 'application/javascript' });
+const worker = new Worker(URL.createObjectURL(blob));
+worker.postMessage("");
+</script>
