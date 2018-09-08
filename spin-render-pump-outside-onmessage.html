@@ -1,12 +1,6 @@
 <script id="worker" type="text/worker">
-let waitRAF = false;
 let ctx;
 let x = 0, y = 50;
-
-function waitForRAF() {
-  waitRAF = true;
-  requestAnimationFrame(waitForRAF);
-}
 
 function mainLoop() {
   function busy_loop() {
@@ -18,10 +12,8 @@ function mainLoop() {
     }
     x = (x + 1) % 200;
 
-    waitRAF = false;
-    while (!waitRAF) {
-      executePendingTasks();
-    }
+    requestAnimationFrame(stopExecutingTasks);
+    beginExecutingTasks();
   }
 
   for (let i = 0; i < 100; ++i) {
@@ -38,7 +30,6 @@ onmessage = function(ev) {
   const ofc = ev.data;
   ctx = ofc.getContext("2d");
   setTimeout(mainLoop, 0);
-  waitForRAF();
 }
 </script>
 

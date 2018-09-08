@@ -2,14 +2,14 @@
 let hasRun = false;
 function runNested() {
   hasRun = true;
-  executePendingTasks();
+  beginExecutingTasks();
 }
 
 onmessage = function(ev) {
   setTimeout(runNested, 0);
   try {
     while (!hasRun) {
-      executePendingTasks();
+      beginExecutingTasks();
     }
   } catch (e) {
     console.log('passed! Saw an exception, as expected:', e);
