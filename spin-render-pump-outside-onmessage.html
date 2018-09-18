@@ -1,29 +1,31 @@
 <script id="worker" type="text/worker">
 let ctx;
-let x = 0, y = 50;
+let x = 0, y = 0;
+const S = 7;
+const W = Math.floor(300 / (S + 1)) - 1;
+const H = Math.floor(150 / (S + 1)) - 1;
 
 function mainLoop() {
-  function busy_loop() {
-    ctx.fillStyle = x % 2 == 0? "blue" : "red";
-    ctx.fillRect(x, y, 10, 10);
+  while (true) {
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
+    ctx.fillRect(0, 0, 300, 150);
+    ctx.fillStyle = 'black'
+    ctx.fillRect(x * (S + 1), y * (S + 1), S, S);
 
-    if (x + 1 == 200) {
-      y += 11;
+    x++;
+    if (x > W) {
+      x = 0;
+      y = (y + 1) % H;
     }
-    x = (x + 1) % 200;
 
     requestAnimationFrame(requestStopExecutingTasks);
     beginExecutingTasks();
-  }
-
-  for (let i = 0; i < 100; ++i) {
-    busy_loop();
   }
 }
 
 onmessage = function(ev) {
   if (ev.data == "hello") {
-    y -= 11;
+    y = (y - 1 + H) % H;
     return;
   }
 
