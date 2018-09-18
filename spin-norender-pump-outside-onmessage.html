@@ -3,7 +3,7 @@ let x = 0, y = 50;
 
 function mainLoop() {
   for (let i = 0; i < 100; ++i) {
-    requestAnimationFrame(stopExecutingTasks);
+    requestAnimationFrame(requestStopExecutingTasks);
     beginExecutingTasks();
   }
 }
@@ -15,7 +15,7 @@ onmessage = function(ev) {
   }
 
   const ofc = ev.data;
-  setTimeout(mainLoop, 0);
+  requestMainLoop(mainLoop);
 }
 </script>
 

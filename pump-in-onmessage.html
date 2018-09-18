@@ -1,0 +1,19 @@
+<script id="worker" type="text/worker">
+onmessage = function(ev) {
+  try {
+    beginExecutingTasks();
+  } catch (e) {
+    console.log('passed! beginExecutingTasks failed in onmessage handler');
+    return;
+  }
+  console.log('failed! beginExecutingTasks did not throw');
+}
+</script>
+
+<script>
+const code = document.getElementById('worker').innerText;
+const blob = new Blob([code], { type: 'application/javascript' });
+const worker = new Worker(URL.createObjectURL(blob));
+
+worker.postMessage("hello")
+</script>

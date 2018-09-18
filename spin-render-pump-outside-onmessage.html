@@ -12,7 +12,7 @@ function mainLoop() {
     }
     x = (x + 1) % 200;
 
-    requestAnimationFrame(stopExecutingTasks);
+    requestAnimationFrame(requestStopExecutingTasks);
     beginExecutingTasks();
   }
 
@@ -29,7 +29,7 @@ onmessage = function(ev) {
 
   const ofc = ev.data;
   ctx = ofc.getContext("2d");
-  setTimeout(mainLoop, 0);
+  requestMainLoop(mainLoop);
 }
 </script>
 

@@ -1,21 +1,34 @@
 <script id="worker" type="text/worker">
-let hasRun = false;
+let depth = 0;
 function runNested() {
-  hasRun = true;
-  beginExecutingTasks();
-}
-
-onmessage = function(ev) {
-  setTimeout(runNested, 0);
-  try {
-    while (!hasRun) {
-      beginExecutingTasks();
+  setTimeout(() => {
+    if (depth === 2) {
+      console.log('failed! Currently inside doubly-nested task.');
+    } else {
+      console.log('passed! Currently inside singly-nested task.');
     }
+  }, 0);
+  try {
+    depth++;
+    beginExecutingTasks();
+    depth--;
   } catch (e) {
     console.log('passed! Saw an exception, as expected:', e);
+    requestStopExecutingTasks();
     return;
   }
   console.log('failed! No exception!');
+}
+
+function run() {
+  setTimeout(runNested, 0);
+  depth++;
+  beginExecutingTasks();
+  depth--;
+}
+
+onmessage = function(ev) {
+  requestMainLoop(run);
 }
 </script>
 
